@@ -17,7 +17,7 @@ public class OpenApiConfig {
     public OpenAPI ellinkOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("El-Link API")
+                        .title("EcoLink API")
                         .description("EcoLink 협업 솔루션 API")
                         .version("v0.0.1"))
                 .addSecurityItem(new SecurityRequirement().addList(BEARER))

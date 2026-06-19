@@ -1,4 +1,4 @@
-# El-Link 아키텍처 설계
+# EcoLink 아키텍처 설계
 
 > Google Apps Script + Google Sheets 기반 시스템을 **React + Spring Boot** 모노레포로 마이그레이션하기 위한 구조 설계 문서.
 > 본 문서는 "어디에 무엇이 들어가는가"(폴더 구조)와 "어떻게 동작하는가"(런타임/프로필 전략)를 정의한다. 도메인 모델은 [ERD.md](./ERD.md), API 계약은 [API.md](./API.md) 참고.
@@ -28,7 +28,7 @@
 ## 2. 모노레포 최상위 구조
 
 ```
-El-Link/
+EcoLink/
 ├── frontend/                 # React 18 + Vite + TS (admin + partnership SPA)
 ├── backend/                  # Spring Boot 3.x + Java 17 (Gradle Kotlin DSL)
 ├── docs/                     # 설계 문서 (본 폴더)

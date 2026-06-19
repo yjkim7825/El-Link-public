@@ -1,4 +1,4 @@
-export const APP_NAME = 'El-Link'
+export const APP_NAME = 'EcoLink'
 export const APP_TAGLINE = 'EcoLink 파트너십'
 
 /** 관리자 네비게이션 항목 (사이드바). */

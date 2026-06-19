@@ -129,7 +129,7 @@ export function HomePage() {
       <section className="bg-white py-16 sm:py-20">
         <div className={CONTAINER}>
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold text-ink-900 sm:text-3xl">El-Link이 해결합니다</h2>
+            <h2 className="text-2xl font-bold text-ink-900 sm:text-3xl">EcoLink가 해결합니다</h2>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-500 sm:text-base">
               협업 준비부터 추천·서류·견적까지, 흩어져 있던 과정을 한 흐름으로 잇습니다.
             </p>

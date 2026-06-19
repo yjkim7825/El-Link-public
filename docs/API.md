@@ -1,4 +1,4 @@
-# El-Link REST API 명세 초안
+# EcoLink REST API 명세 초안
 
 > 모든 경로 prefix: `/api`. 모든 응답은 공통 envelope로 감싼다. 인증/권한, 도메인 엔티티는 [ARCHITECTURE.md](./ARCHITECTURE.md), [ERD.md](./ERD.md) 참고.
 

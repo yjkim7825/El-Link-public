@@ -1,4 +1,4 @@
-# El-Link 도메인 모델 / ERD 초안
+# EcoLink 도메인 모델 / ERD 초안
 
 > JPA 엔티티 기준 설계. 타입은 논리 타입으로 표기(실제 매핑은 H2/PostgreSQL 호환). 모든 엔티티는 `BaseTimeEntity`(`createdAt`, `updatedAt`)를 상속한다고 가정한다.
 
