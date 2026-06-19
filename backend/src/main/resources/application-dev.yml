@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:ellink;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+ellink:
+  jwt:
+    refresh-cookie-secure: false   # dev는 http://localhost 이므로 Secure 끔 (브라우저가 쿠키 전송 가능)
+  storage:
+    type: local
+    local:
+      base-dir: ./storage
+  cors:
+    allowed-origins: http://localhost:5173
+
+logging:
+  level:
+    com.ellink: DEBUG
+    org.hibernate.SQL: DEBUG

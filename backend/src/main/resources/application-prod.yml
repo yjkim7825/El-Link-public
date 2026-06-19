@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ellink}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+ellink:
+  storage:
+    type: cloud
+    cloud:
+      # Cloudflare R2 / Supabase Storage (S3 호환) — 운영 단계 구현
+      endpoint: ${STORAGE_ENDPOINT:}
+      bucket: ${STORAGE_BUCKET:}
+      access-key: ${STORAGE_ACCESS_KEY:}
+      secret-key: ${STORAGE_SECRET_KEY:}
+  cors:
+    allowed-origins: ${ELLINK_CORS_ORIGINS}
+
+springdoc:
+  swagger-ui:
+    enabled: false   # 운영에서는 Swagger UI 비공개
+
+logging:
+  level:
+    com.ellink: INFO

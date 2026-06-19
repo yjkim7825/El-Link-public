@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 16mm;
+        }
+        * {
+            font-family: "Noto Sans KR", sans-serif;
+        }
+        body {
+            color: #1a1a1a;
+            font-size: 10pt;
+            line-height: 1.5;
+        }
+        .doc-title {
+            text-align: center;
+            font-size: 22pt;
+            font-weight: bold;
+            letter-spacing: 14px;
+            margin: 0 0 18px 0;
+        }
+        .meta-row {
+            width: 100%;
+        }
+        .meta-row td {
+            vertical-align: top;
+        }
+        .supplier-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .supplier-table td {
+            border: 1px solid #888;
+            padding: 4px 6px;
+            font-size: 8.5pt;
+        }
+        .supplier-table .label {
+            background: #f3f3f3;
+            font-weight: bold;
+            white-space: nowrap;
+            width: 64px;
+        }
+        .supplier-caption {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .party-box {
+            font-size: 10.5pt;
+        }
+        .party-box .company {
+            font-size: 14pt;
+            font-weight: bold;
+        }
+        .stamp {
+            display: inline-block;
+            width: 46px;
+            height: 46px;
+            border: 1px dashed #c0392b;
+            border-radius: 50%;
+            color: #c0392b;
+            font-size: 7pt;
+            text-align: center;
+            line-height: 46px;
+        }
+        table.items {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 8px;
+        }
+        table.items th, table.items td {
+            border: 1px solid #555;
+            padding: 6px 8px;
+        }
+        table.items th {
+            background: #2c3e50;
+            color: #fff;
+            font-size: 9.5pt;
+        }
+        td.num {
+            text-align: right;
+        }
+        td.center {
+            text-align: center;
+        }
+        .total-table {
+            border-collapse: collapse;
+            width: 45%;
+            margin-top: 12px;
+            float: right;
+        }
+        .total-table td {
+            border: 1px solid #555;
+            padding: 8px 10px;
+            font-size: 12pt;
+        }
+        .total-table .label {
+            background: #2c3e50;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            width: 40%;
+        }
+        .total-table .amount {
+            text-align: right;
+            font-weight: bold;
+        }
+        .issued {
+            margin-top: 8px;
+            font-size: 9.5pt;
+            color: #555;
+        }
+        .clear {
+            clear: both;
+        }
+        .footer-note {
+            margin-top: 36px;
+            font-size: 8pt;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="doc-title">견 적 서</div>
+
+    <table class="meta-row">
+        <tr>
+            <td style="width: 50%;">
+                <div class="party-box">
+                    <div class="company">@@CLIENT_COMPANY@@ 귀하</div>
+                    <div>아래와 같이 견적합니다.</div>
+                    <div class="issued">견적번호: Q-@@QUOTE_ID@@ &#160;|&#160; 발급일자: @@ISSUED_DATE@@</div>
+                    <div class="issued">유효기간: 발급일로부터 1개월 (~ @@VALID_UNTIL@@)</div>
+                </div>
+            </td>
+            <td style="width: 50%;">
+                <div class="supplier-caption">공급자</div>
+                <table class="supplier-table">
+                    <tr>
+                        <td class="label">상호</td>
+                        <td>@@SUPPLIER_NAME@@</td>
+                        <td class="label">대표자</td>
+                        <td>@@SUPPLIER_CEO@@ <span class="stamp">(인)</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label">등록번호</td>
+                        <td colspan="3">@@SUPPLIER_BIZNO@@</td>
+                    </tr>
+                    <tr>
+                        <td class="label">주소</td>
+                        <td colspan="3">@@SUPPLIER_ADDRESS@@</td>
+                    </tr>
+                    <tr>
+                        <td class="label">업태</td>
+                        <td>@@SUPPLIER_BIZTYPE@@</td>
+                        <td class="label">종목</td>
+                        <td>@@SUPPLIER_BIZITEM@@</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table class="items">
+        <thead>
+            <tr>
+                <th style="width: 7%;">순번</th>
+                <th>품명</th>
+                <th style="width: 9%;">단위</th>
+                <th style="width: 17%;">단가</th>
+                <th style="width: 8%;">수량</th>
+                <th style="width: 8%;">일수</th>
+                <th style="width: 19%;">금액</th>
+            </tr>
+        </thead>
+        <tbody>
+            @@ITEM_ROWS@@
+        </tbody>
+    </table>
+
+    <table class="total-table">
+        <tr>
+            <td class="label">라인합</td>
+            <td class="amount">@@SUBTOTAL_SUM@@ 원</td>
+        </tr>
+        <tr>
+            <td class="label">기업이윤(10%)</td>
+            <td class="amount">@@COMPANY_PROFIT@@ 원</td>
+        </tr>
+        <tr>
+            <td class="label">공급가액</td>
+            <td class="amount">@@SUPPLY_AMOUNT@@ 원</td>
+        </tr>
+        <tr>
+            <td class="label">부가세(10%)</td>
+            <td class="amount">@@VAT@@ 원</td>
+        </tr>
+        <tr>
+            <td class="label">합계(VAT 포함)</td>
+            <td class="amount">@@TOTAL_AMOUNT@@ 원</td>
+        </tr>
+    </table>
+    <div class="clear"></div>
+
+    <div class="footer-note">
+        본 견적서의 유효기간은 발급일로부터 1개월입니다. (발급 @@ISSUED_DATE@@ / 유효 ~ @@VALID_UNTIL@@)<br/>
+        본 견적서는 El-Link 파트너십 시스템에서 발급되었습니다.
+    </div>
+</body>
+</html>

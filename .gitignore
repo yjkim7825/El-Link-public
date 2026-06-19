@@ -1,0 +1,70 @@
+# ===== Env / Secrets (.env.example만 커밋) =====
+.env
+.env.*
+!.env.example
+
+# ===== Node / Frontend =====
+node_modules/
+.pnpm-store/
+dist/
+build/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+*.local
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== Java / Spring / Gradle =====
+.gradle/
+target/
+backend/build/
+backend/bin/
+backend/.gradle/
+backend/out/
+*.class
+*.jar
+*.war
+hs_err_pid*
+# Gradle wrapper jar must be committed for portable builds (negation must follow *.jar)
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# Spring Boot
+backend/src/main/resources/application-local.yml
+
+# ===== Runtime / Storage (dev LocalStorage) =====
+# 런타임 저장 폴더만 무시(루트 앵커). com/ellink/common/storage 소스 패키지는 추적되어야 하므로 앵커 필수.
+/storage/
+/backend/storage/
+*.log
+logs/
+
+# ===== Verify outputs (generated PDFs/artifacts from manual test scripts) =====
+verify_output/
+backend/verify_output/
+
+# H2 dev DB files
+*.mv.db
+*.trace.db
+
+# ===== IDE / Editor =====
+.idea/
+*.iml
+.vscode/
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Secrets =====
+*.pem
+*.key
+secrets/
+**/application-secret.yml

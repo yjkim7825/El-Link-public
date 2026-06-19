@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink-900 antialiased;
+  }
+}
+
+@layer components {
+  /* 공용 폼 라벨 토큰 (legacy .input-label) */
+  .field-label {
+    @apply mb-2 block text-[15px] font-medium text-ink-900;
+  }
+}

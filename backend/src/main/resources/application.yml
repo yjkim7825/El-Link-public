@@ -1,0 +1,39 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: ellink-backend
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 25MB
+
+server:
+  port: 8080
+
+# JWT (값은 환경변수로 주입 권장; dev 기본값 제공)
+ellink:
+  jwt:
+    secret: ${ELLINK_JWT_SECRET:dev-only-secret-please-override-with-32+bytes-key-0123456789}
+    access-token-validity-seconds: 900        # 15분
+    refresh-token-validity-seconds: 1209600   # 14일
+    refresh-cookie-secure: true               # 운영 기본값(HTTPS). dev에서 false로 override
+  cors:
+    allowed-origins: ${ELLINK_CORS_ORIGINS:http://localhost:5173}
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    # gemini-1.5-flash-latest는 퇴역(404). 분류 작업용 안정 버전 핀 고정.
+    model: ${GEMINI_MODEL:gemini-2.5-flash}
+    base-url: https://generativelanguage.googleapis.com/v1beta
+
+# springdoc / swagger
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
