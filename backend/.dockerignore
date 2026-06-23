@@ -1,0 +1,12 @@
+build/
+.gradle/
+bin/
+out/
+storage/
+verify_output/
+*.log
+.env
+.env.*
+!.env.example
+.idea/
+*.iml

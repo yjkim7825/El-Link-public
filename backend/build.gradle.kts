@@ -24,6 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webflux") // Gemini WebClient
+    implementation("org.springframework.boot:spring-boot-starter-actuator") // /actuator/health (배포 헬스체크)
 
     // --- API docs (Swagger / OpenAPI) ---
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")

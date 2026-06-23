@@ -73,6 +73,8 @@ pnpm dev
 
 > 배포 후 링크 추가 예정 — _coming soon_
 
+배포 방법은 [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) 참고 (Supabase + Railway + Vercel).
+
 ## 🖼️ 스크린샷
 
 > 스크린샷은 [`docs/screenshots/`](./docs/screenshots) 에 추가 예정입니다.

@@ -42,12 +42,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * dev 프로필 전용 시드. 기본 관리자/테스트 파트너/단가 카탈로그/회사 서류에 더해,
- * 데모 시연용 목업(자료·협업 제안·파트너·견적)을 생성한다(각 도메인이 비어 있을 때만).
- * 운영(prod)에서는 동작하지 않는다.
+ * 시드 데이터. 기본 관리자/파트너/단가 카탈로그/회사 서류에 더해,
+ * 데모 시연용 목업(자료·협업 추천·파트너·견적)을 생성한다(각 도메인이 비어 있을 때만 = 멱등).
+ *
+ * 활성 프로필:
+ *  - dev  : 로컬 개발(H2)에서 항상 시드.
+ *  - demo : 운영 배포에서도 포트폴리오 데모용 시드를 켜고 싶을 때 사용
+ *           (예: SPRING_PROFILES_ACTIVE=prod,demo). 비어 있을 때만 1회 생성되므로 재기동 안전.
+ * prod 단독(데모 OFF)에서는 동작하지 않는다.
  */
 @Component
-@Profile("dev")
+@Profile({"dev", "demo"})
 public class DataInitializer implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);

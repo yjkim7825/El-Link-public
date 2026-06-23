@@ -1,4 +1,4 @@
-import { api } from './client'
+import { api, API_BASE_URL } from './client'
 import type { ApiResponse } from '@/types/api'
 import type { PortfolioItem } from '@/types/portfolio'
 
@@ -8,7 +8,10 @@ export async function listPublicPortfolio(): Promise<PortfolioItem[]> {
   return res.data.data
 }
 
-/** 무인증 대표 이미지 경로(<img src>로 직접 사용, 토큰 불필요). 없으면 404 → 폴백. */
+/**
+ * 무인증 대표 이미지 절대 경로(<img src>로 직접 사용, 토큰 불필요). 없으면 404 → 폴백.
+ * 분리 도메인 배포에서도 백엔드를 가리키도록 API_BASE_URL을 사용.
+ */
 export function publicThumbnailUrl(id: number): string {
-  return `/api/public/portfolio/${id}/thumbnail`
+  return `${API_BASE_URL}/public/portfolio/${id}/thumbnail`
 }

@@ -1,12 +1,14 @@
 spring:
   datasource:
+    # Supabase Postgres. 예: jdbc:postgresql://db.xxxx.supabase.co:5432/postgres?sslmode=require
     url: ${DB_URL:jdbc:postgresql://localhost:5432/ellink}
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: validate
+      # 첫 배포: update(스키마 자동 생성) → 안정화 후 validate. 환경변수로 전환.
+      ddl-auto: ${JPA_DDL_AUTO:validate}
     show-sql: false
     properties:
       hibernate:
@@ -14,14 +16,13 @@ spring:
 
 ellink:
   storage:
-    type: cloud
-    cloud:
-      # Cloudflare R2 / Supabase Storage (S3 호환) — 운영 단계 구현
-      endpoint: ${STORAGE_ENDPOINT:}
-      bucket: ${STORAGE_BUCKET:}
-      access-key: ${STORAGE_ACCESS_KEY:}
-      secret-key: ${STORAGE_SECRET_KEY:}
+    # 운영 저장소 = Supabase Storage (CloudStorageService, @Profile("prod"))
+    supabase:
+      url: ${SUPABASE_URL:}
+      service-key: ${SUPABASE_SERVICE_KEY:}
+      bucket: ${SUPABASE_BUCKET:ellink-files}
   cors:
+    # 콤마로 여러 개. 예: https://el-link-public.vercel.app
     allowed-origins: ${ELLINK_CORS_ORIGINS}
 
 springdoc:

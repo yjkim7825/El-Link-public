@@ -13,7 +13,7 @@ spring:
       max-request-size: 25MB
 
 server:
-  port: 8080
+  port: ${PORT:8080}   # Railway 등은 PORT를 동적 주입. 로컬은 8080.
 
 # JWT (값은 환경변수로 주입 권장; dev 기본값 제공)
 ellink:
@@ -22,6 +22,7 @@ ellink:
     access-token-validity-seconds: 900        # 15분
     refresh-token-validity-seconds: 1209600   # 14일
     refresh-cookie-secure: true               # 운영 기본값(HTTPS). dev에서 false로 override
+    refresh-cookie-same-site: ${REFRESH_COOKIE_SAME_SITE:Strict}  # 분리 도메인 배포 시 None(+secure=true)
   cors:
     allowed-origins: ${ELLINK_CORS_ORIGINS:http://localhost:5173}
   gemini:
@@ -37,3 +38,14 @@ springdoc:
     enabled: true
   api-docs:
     path: /v3/api-docs
+
+# actuator — 배포 헬스체크용 /actuator/health 만 공개
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

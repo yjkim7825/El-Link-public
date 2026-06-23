@@ -4,9 +4,16 @@ import type { RefreshResponse } from '@/types/auth'
 import { getAccessToken, useAuthStore } from '@/store/authStore'
 import { userFromToken } from '@/lib/jwt'
 
-/** baseURL '/api' — Vite 프록시가 백엔드(8080)로 전달. */
+/**
+ * API 베이스 URL.
+ * - dev/동일도메인: VITE_API_BASE_URL 미설정 → '/api' (Vite 프록시 또는 같은 출처).
+ * - 분리 배포(Vercel↔Railway): VITE_API_BASE_URL='https://<backend>' → '<backend>/api'.
+ */
+const RAW_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+export const API_BASE_URL = RAW_BASE ? `${RAW_BASE}/api` : '/api'
+
 export const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE_URL,
   withCredentials: true, // refresh httpOnly 쿠키 송수신
 })
 
@@ -26,7 +33,7 @@ let refreshing: Promise<string | null> | null = null
 async function requestRefresh(): Promise<string | null> {
   try {
     const res = await axios.post<ApiResponse<RefreshResponse>>(
-      '/api/auth/refresh',
+      `${API_BASE_URL}/auth/refresh`,
       null,
       { withCredentials: true },
     )
