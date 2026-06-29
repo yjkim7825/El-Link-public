@@ -70,6 +70,9 @@ public class DataInitializer implements CommandLineRunner {
     private static final byte[] PLACEHOLDER_PNG = Base64.getDecoder().decode(
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==");
 
+    /** 스토리지 도달 가능 여부(run 시작 시 1회 측정). false면 파일 저장을 건너뛴다. */
+    private boolean storageOk = true;
+
     private final AdminUserRepository adminUserRepository;
     private final PartnerRepository partnerRepository;
     private final PriceCatalogRepository catalogRepository;
@@ -105,6 +108,13 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // 스토리지(운영=Supabase) 도달 여부를 1회 확인. 불가하면 파일 첨부는 건너뛰되
+        // 계정/카탈로그/메타데이터 시드는 진행해 앱 startup과 로그인은 보장한다.
+        this.storageOk = probeStorage();
+        if (!storageOk) {
+            log.warn("[seed] 스토리지 접근 불가 — 파일 첨부 없이 메타데이터만 시드합니다(앱은 정상 기동).");
+        }
+
         AdminUser admin = adminUserRepository.findByEmail(ADMIN_EMAIL)
                 .orElseGet(() -> {
                     AdminUser created = adminUserRepository.save(new AdminUser(
@@ -129,6 +139,30 @@ public class DataInitializer implements CommandLineRunner {
         seedProposals(admin, materials);
         Partner activePartner = seedDemoPartners(admin);
         seedQuotes(activePartner);
+    }
+
+    /** 스토리지 도달 확인. exists() 가 예외 없이 반환되면 도달 가능으로 간주(없는 키여도 OK). */
+    private boolean probeStorage() {
+        try {
+            storageService.exists("__seed_probe__/none");
+            return true;
+        } catch (Exception e) {
+            log.warn("[seed] 스토리지 probe 실패: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    /** 저장 실패/스토리지 불가 시 null 반환(예외 삼킴). 호출부는 null이면 첨부를 건너뛴다. */
+    private StoredObject safeStore(String keyHint, byte[] content, String contentType) {
+        if (!storageOk) {
+            return null;
+        }
+        try {
+            return storageService.store(keyHint, content, contentType);
+        } catch (Exception e) {
+            log.warn("[seed] 파일 저장 실패(건너뜀): {} - {}", keyHint, e.getMessage());
+            return null;
+        }
     }
 
     /** 단가 카탈로그 16종(ERD 초기 시드). 비어 있을 때만 일괄 생성. */
@@ -170,15 +204,20 @@ public class DataInitializer implements CommandLineRunner {
 
     private void seedDocument(AdminUser admin, CompanyDocType type, String title,
                               String classpath, String originalName, String mimeType) {
+        byte[] bytes;
         try {
-            byte[] bytes = new ClassPathResource(classpath).getInputStream().readAllBytes();
-            StoredObject stored = storageService.store(originalName, bytes, mimeType);
-            documentRepository.save(new CompanyDocument(
-                    type, title, stored.key(), originalName, mimeType, stored.size(), admin));
-            log.info("[seed] 회사 서류 생성: {} ({} bytes)", title, stored.size());
+            bytes = new ClassPathResource(classpath).getInputStream().readAllBytes();
         } catch (IOException e) {
-            log.warn("[seed] 회사 서류 시드 실패: {} - {}", title, e.getMessage());
+            log.warn("[seed] 회사 서류 리소스 로드 실패: {} - {}", title, e.getMessage());
+            return;
         }
+        StoredObject stored = safeStore(originalName, bytes, mimeType);
+        if (stored == null) {
+            return; // 저장 실패/스토리지 불가 시 메타 생성 건너뜀(서류는 파일 키가 필수)
+        }
+        documentRepository.save(new CompanyDocument(
+                type, title, stored.key(), originalName, mimeType, stored.size(), admin));
+        log.info("[seed] 회사 서류 생성: {} ({} bytes)", title, stored.size());
     }
 
     /**
@@ -226,14 +265,18 @@ public class DataInitializer implements CommandLineRunner {
     private Material material(AdminUser admin, String title, String summary,
                              String category, String keywords, boolean withFile) {
         Material m = new Material(title, summary, category, keywords, admin);
-        // 대표 이미지: 카테고리 색상 단색 PNG를 동적 생성해 StorageService에 저장
+        // 대표 이미지: 카테고리 색상 단색 PNG를 동적 생성해 StorageService에 저장.
+        // 저장 실패 시 썸네일/첨부 없이 자료(메타)만 시드(부분 성공).
         int rgb = CATEGORY_COLORS.getOrDefault(category, 0x64748B);
-        byte[] png = solidColorPng(rgb);
-        StoredObject thumb = storageService.store("thumb.png", png, "image/png");
-        m.assignThumbnail(thumb.key());
+        StoredObject thumb = safeStore("thumb.png", solidColorPng(rgb), "image/png");
+        if (thumb != null) {
+            m.assignThumbnail(thumb.key());
+        }
         if (withFile) {
-            StoredObject stored = storageService.store("sample.png", PLACEHOLDER_PNG, "image/png");
-            m.addFile(stored.key(), "활동사진.png", "image/png", stored.size());
+            StoredObject stored = safeStore("sample.png", PLACEHOLDER_PNG, "image/png");
+            if (stored != null) {
+                m.addFile(stored.key(), "활동사진.png", "image/png", stored.size());
+            }
         }
         return m;
     }
@@ -359,10 +402,14 @@ public class DataInitializer implements CommandLineRunner {
         quoteRepository.save(issued);
         try {
             byte[] pdf = quotePdfGenerator.generate(issued);
-            StoredObject stored = storageService.store("quote-seed.pdf", pdf, "application/pdf");
-            issued.markIssued(Instant.now(), stored.key());
-            quoteRepository.save(issued);
-            log.info("[seed] 데모 견적(발급완료) 생성: id={} 총액={}", issued.getId(), issued.getTotalAmount());
+            StoredObject stored = safeStore("quote-seed.pdf", pdf, "application/pdf");
+            if (stored != null) {
+                issued.markIssued(Instant.now(), stored.key());
+                quoteRepository.save(issued);
+                log.info("[seed] 데모 견적(발급완료) 생성: id={} 총액={}", issued.getId(), issued.getTotalAmount());
+            } else {
+                log.warn("[seed] 견적 PDF 저장 실패(스토리지) - 발급 견적을 DRAFT로 유지");
+            }
         } catch (Exception e) {
             log.warn("[seed] 견적 PDF 생성 실패 - 발급 견적을 DRAFT로 유지: {}", e.getMessage());
         }

@@ -13,6 +13,23 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  # graceful 종료: 재배포/스케일 시 진행 중 요청을 정리한 뒤 종료(헬스체크 플랩 완화).
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+server:
+  shutdown: graceful
+
+# readiness 그룹은 readinessState 만 포함(기본값 명시). db/storage 같은 외부 의존 인디케이터를
+# readiness 에서 제외해, 일시 장애가 Render 헬스체크 → 무한 재시작으로 번지지 않게 한다.
+management:
+  endpoint:
+    health:
+      group:
+        readiness:
+          include: readinessState
+        liveness:
+          include: livenessState
 
 ellink:
   storage:
