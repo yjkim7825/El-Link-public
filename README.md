@@ -16,6 +16,23 @@
 
 ---
 
+## 🚀 라이브 데모
+
+| 사이트 | URL |
+|---|---|
+| 프론트엔드 (Vercel) | https://el-link-public.vercel.app |
+| 백엔드 API (Render) | https://el-link-public.onrender.com |
+| API 문서 (Swagger) | https://el-link-public.onrender.com/swagger-ui.html |
+
+**체험 계정**
+- 관리자: `admin@ecolink.demo` / `admin1234`
+- 파트너: `active@partner.demo` / `demo1234`
+
+> ⚠️ Render 무료 인스턴스라 15분 미접속 시 sleep합니다. 첫 접속 시 cold start로 30~60초 로딩될 수 있습니다.
+> ⚠️ Gemini API 무료 쿼터 한도 내에서 작동. AI 분석 한도 초과 시 일시 장애 토스트가 뜰 수 있습니다.
+
+---
+
 ## ✨ 핵심 기능
 
 - **🤖 AI 자료 자동 분류** — 업로드한 협업 자료(PDF·이미지·텍스트)를 Gemini가 읽고 카테고리·제목·키워드를 자동 추출
@@ -69,11 +86,9 @@ pnpm dev
 
 ---
 
-## 🌐 라이브 데모
+## 🌐 직접 배포하기
 
-> 배포 후 링크 추가 예정 — _coming soon_
-
-배포 방법은 [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) 참고 (Supabase + Railway + Vercel).
+라이브 데모 링크는 상단 [🚀 라이브 데모](#-라이브-데모) 참고. 직접 배포해 보려면 [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)를 참고하세요 (Supabase + Render/Railway + Vercel).
 
 ## 🖼️ 스크린샷
 
